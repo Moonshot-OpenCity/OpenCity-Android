@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pre-dex-items>
+
+    <item
+        dex="/Users/mehdichouag/Documents/OpenCity/app/build/intermediates/pre-dexed/debug/classes-b4bd195bde777a07d3c262f203304df22b160dab.jar"
+        jar="/Users/mehdichouag/Documents/OpenCity/app/build/intermediates/exploded-aar/com.android.support/support-v4/20.0.0/classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="8694693636ab36910c8100ce527c258ff3ebece0"/>
+    <item
+        dex="/Users/mehdichouag/Documents/OpenCity/app/build/intermediates/pre-dexed/debug/support-annotations-20.0.0-bca9cd8c8082330ef7549e0398af852faae531fd.jar"
+        jar="/Applications/Android Studio.app/sdk/extras/android/m2repository/com/android/support/support-annotations/20.0.0/support-annotations-20.0.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="9d9013e9ff35fc3756411e62873c363c70c638fa"/>
+    <item
+        dex="/Users/mehdichouag/Documents/OpenCity/app/build/intermediates/pre-dexed/debug/internal_impl-20.0.0-8f38b5d927cf9d6a63ac6022b19ebf3d582a7184.jar"
+        jar="/Users/mehdichouag/Documents/OpenCity/app/build/intermediates/exploded-aar/com.android.support/support-v4/20.0.0/libs/internal_impl-20.0.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="e40b3078e3fbd353c9f44da8df25a8fc0078209d"/>
+    <item
+        dex="/Users/mehdichouag/Documents/OpenCity/app/build/intermediates/pre-dexed/debug/classes-e4cb61559a8126865ed5049586b66fd2632c5c61.jar"
+        jar="/Users/mehdichouag/Documents/OpenCity/app/build/intermediates/exploded-aar/com.google.android.gms/play-services/5.0.89/classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="d71573c9c5ea98a8db47ad6ff993a63d492b3bfa"/>
+
+</pre-dex-items>

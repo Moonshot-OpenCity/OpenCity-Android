@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">OpenCity</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- MENU DRAWER -->
+    <string-array name="menu_labels">
+        <item>DashBoard</item>
+        <item>Carte</item>
+        <item>Connexion</item>
+    </string-array>
+
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="action_websearch">Web search</string>
+    <string name="app_not_available">Sorry, there\'s no web browser available</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- DETAILS POSTIT INFO -->
+    <string name="ownerDetail">Par &lt;b>%1$s&lt;/b>, il y a %2$s.</string>
+
+	<!-- LOGIN FRAGMENT -->
+	<string name="email">E-mail</string>
+    <string name="password">Mot de passe</string>
+    <string name="connect">Connexion</string>
+    <string name="pref_token_key" translate="false">token</string>
+    <string name="is_login" translate="false">login</string>
+    <string name="create">Se créé un compte</string>
+    <string name="name">Prénom</string>
+</resources>

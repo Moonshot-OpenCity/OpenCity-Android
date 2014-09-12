@@ -1,0 +1,88 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_bg"
+    tools:context="com.app.opencity.fragments.LoginFragment">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:gravity="top|center"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:src="@drawable/logo"
+            android:gravity="center"/>
+
+        <LinearLayout
+            android:id="@+id/form"
+            android:layout_below="@id/title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_form_rounded"
+            android:orientation="vertical"
+            android:layout_marginTop="25dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp">
+
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@null"
+                android:hint="@string/email"
+                android:padding="5dp"
+                android:text="mehdi@mehdi.com"
+                android:inputType="textNoSuggestions"
+                android:singleLine="true" >
+
+                <requestFocus />
+            </EditText>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="#CDCDCDFF" />
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:text="mehdi"
+                android:padding="5dp" />
+        </LinearLayout>
+        <Button
+            android:id="@+id/connect"
+            android:layout_above="@+id/create"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/connect"
+            android:background="@drawable/bg_button_rounded"
+            android:textColor="@color/white"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"/>
+        <Button
+            android:id="@+id/create"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/create"
+            android:background="@null"
+            android:textColor="@color/white"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+</FrameLayout>
