@@ -16,29 +16,26 @@
 
 package com.app.opencity.activities;
 
-import java.util.Locale;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.app.opencity.R;
 import com.app.opencity.fragments.DashBoardFragment;
 import com.app.opencity.fragments.LoginFragment;
 import com.app.opencity.fragments.MapsFragment;
+import com.app.opencity.fragments.ProfileFragment;
 
 /**
  * This example illustrates a common usage of the DrawerLayout widget
@@ -71,6 +68,8 @@ public class MainActivity extends Activity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
+    private ArrayAdapter<String> mArray;
+    private boolean mIsProfile;
 
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
@@ -80,17 +79,18 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mIsProfile = getIntent().getBooleanExtra(SplashScreenActivity.INTENT_EXTRA_PROFILE, false);
 
         mTitle = mDrawerTitle = getTitle();
-        mPlanetTitles = getResources().getStringArray(R.array.menu_labels);
+        mPlanetTitles = mIsProfile ? getResources().getStringArray(R.array.menu_labels_connect) : getResources().getStringArray(R.array.menu_labels);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mPlanetTitles));
+        mDrawerList.setAdapter((mArray = new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item, mPlanetTitles)));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // enable ActionBar app icon to behave as action to toggle nav drawer
@@ -156,8 +156,12 @@ public class MainActivity extends Activity {
             case 1:
                 fragment = MapsFragment.newInstance(position + 1);
                 break;
-            case 2:
-                fragment = LoginFragment.newInstance(position + 1);
+            case 2: {
+                if (!mIsProfile)
+                    fragment = LoginFragment.newInstance(position + 1);
+                else
+                    fragment = ProfileFragment.newInstance(position + 1);
+            }
                 break;
             default:
                 break;
@@ -176,6 +180,37 @@ public class MainActivity extends Activity {
     public void setTitle(CharSequence title) {
         mTitle = title;
         getActionBar().setTitle(mTitle);
+    }
+
+    public void setProfile()
+    {
+        int position = mArray.getPosition("DashBoard");
+        mIsProfile = true;
+        mPlanetTitles[mArray.getPosition("Connexion")] = "Profil";
+        mArray.notifyDataSetChanged();
+        FragmentManager fragmentManager = getFragmentManager();
+
+        fragmentManager.beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .replace(R.id.content_frame, DashBoardFragment.newInstance(position)).commit();
+        mDrawerList.setItemChecked(position, true);
+        setTitle(mPlanetTitles[position]);
+
+    }
+
+    public void disconnectUser()
+    {
+        int position = mArray.getPosition("DashBoard");
+        mIsProfile = false;
+        mPlanetTitles[mArray.getPosition("Profil")] = "Connexion";
+        mArray.notifyDataSetChanged();
+        FragmentManager fragmentManager = getFragmentManager();
+
+        fragmentManager.beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .replace(R.id.content_frame, DashBoardFragment.newInstance(position)).commit();
+        mDrawerList.setItemChecked(position, true);
+        setTitle(mPlanetTitles[position]);
     }
 
     /**

@@ -18,10 +18,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.app.opencity.R;
+import com.app.opencity.models.CheckToken;
 
 public class SplashScreenActivity extends Activity {
     // Splash screen timer
+    public static String INTENT_EXTRA_PROFILE = "profile_bool";
     private static int SPLASH_TIME_OUT = 2000;
+    private boolean mProfile = false;
 
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -35,7 +38,13 @@ public class SplashScreenActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         StartAnimations();
+        new CheckToken(this, true).execute();
         new checkData().execute();
+    }
+
+    public void setProfile()
+    {
+        mProfile = true;
     }
 
     private class checkData extends AsyncTask<Void, Integer, Boolean> {
@@ -71,7 +80,9 @@ public class SplashScreenActivity extends Activity {
                 alertDialog.show();
             } else {
                 finish();
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra(INTENT_EXTRA_PROFILE, mProfile);
+                startActivity(intent);
             }
         }
     }

@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.app.opencity.R;
+import com.app.opencity.models.CheckToken;
 import com.app.opencity.models.CreateAccount;
 
 /**
@@ -49,6 +50,7 @@ public class CreateFragment extends Fragment implements View.OnClickListener{
         String name;
         String email;
         String password;
+        CheckToken check;
         String ret = null;
 
         if (!(name = mName.getText().toString()).isEmpty() && !(email = mEmail.getText().toString()).isEmpty() && !(password = mPassword.getText().toString()).isEmpty())
@@ -57,6 +59,8 @@ public class CreateFragment extends Fragment implements View.OnClickListener{
             {
                 CreateAccount account = new CreateAccount(getActivity());
                 account.execute(email, password, name);
+                check = new CheckToken(getActivity());
+                check.execute();
             }
             else
                 Toast.makeText(getActivity(), "Email non valide", Toast.LENGTH_SHORT).show();

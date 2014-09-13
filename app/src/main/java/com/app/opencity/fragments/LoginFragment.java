@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.app.opencity.R;
+import com.app.opencity.activities.MainActivity;
 import com.app.opencity.models.CheckToken;
 import com.app.opencity.models.LoginToken;
 import com.app.opencity.models.SessionManager;
@@ -23,6 +24,7 @@ import com.app.opencity.models.SessionManager;
 public class LoginFragment extends Fragment implements View.OnClickListener {
     public static final String ARG_LOGIN_NUMBER = "login_number";
 
+    private MainActivity mActivity;
     private SessionManager mManager;
     private Button mSend;
     private Button mCreate;
@@ -46,6 +48,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        mActivity = (MainActivity)getActivity();
         mManager = new SessionManager(getActivity().getApplicationContext());
         mView = inflater.inflate(R.layout.fragment_login, container, false);
         mSend = (Button) mView.findViewById(R.id.connect);
@@ -74,11 +77,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             check.execute();
         }
         else if (v == mCreate)
-        {
             createAccountFragment();
-        }
 
     }
+
     public void createAccountFragment()
     {
         Fragment fragment = CreateFragment.newInstance();

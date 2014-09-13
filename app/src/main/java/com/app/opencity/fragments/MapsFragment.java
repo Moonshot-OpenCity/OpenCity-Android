@@ -2,21 +2,28 @@ package com.app.opencity.fragments;
 
 
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.app.opencity.R;
+import com.app.opencity.activities.SettingActivity;
 import com.app.opencity.models.POIs;
 import com.app.opencity.models.PostIts;
 import com.google.android.gms.common.ConnectionResult;
@@ -50,7 +57,7 @@ import java.util.LinkedList;
  */
 public class MapsFragment extends Fragment implements LocationListener,
         GooglePlayServicesClient.OnConnectionFailedListener,
-        GooglePlayServicesClient.ConnectionCallbacks, GoogleMap.OnInfoWindowClickListener {
+        GooglePlayServicesClient.ConnectionCallbacks, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
     public static final String ARG_MAP_NUMBER = "map_number";
     private LocationClient mLocationClient;
     private GoogleMap mMap;
@@ -63,6 +70,37 @@ public class MapsFragment extends Fragment implements LocationListener,
 
     public MapsFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu (Menu menu, MenuInflater inflater)
+    {
+        inflater.inflate(R.menu.menu_maps, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.refresh:
+                refreshMap();
+                return true;
+            case R.id.setting:
+                createSettingActivity();
+                return true;
+            default:
+                super.onOptionsItemSelected(item);
+
+        }
+       return true;
     }
 
     public static MapsFragment newInstance(int position) {
@@ -86,12 +124,13 @@ public class MapsFragment extends Fragment implements LocationListener,
         return v;
     }
 
-    public void bindView() {
+    public void bindView(boolean isRefresh) {
         mMap = ((MapFragment) getFragmentManager()
                 .findFragmentById(R.id.fragmentMap)).getMap();
         if (mMap != null && mLocationClient.isConnected() == true && mCurrentLocation != null) {
             LatLng place = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place, 14));
+            if (!isRefresh)
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place, 14));
             mMap.setMyLocationEnabled(true);
             /*mMap.addMarker(new MarkerOptions()
                     .title("Vous")
@@ -99,6 +138,7 @@ public class MapsFragment extends Fragment implements LocationListener,
                     .position(place)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));*/
             mMap.setOnInfoWindowClickListener(this);
+            mMap.setOnMapLongClickListener(this);
         }
     }
 
@@ -130,9 +170,23 @@ public class MapsFragment extends Fragment implements LocationListener,
         mCurrentLocation = mLocationClient.getLastLocation();
         FetchPostItTask dataTask = new FetchPostItTask();
         dataTask.execute(String.valueOf(mCurrentLocation.getLatitude()), String.valueOf(mCurrentLocation.getLongitude()));
-        FetchPOIsTask dataTaskPOIs = new FetchPOIsTask();
-        dataTaskPOIs.execute(String.valueOf(mCurrentLocation.getLatitude()), String.valueOf(mCurrentLocation.getLongitude()));
-        bindView();
+        if (ifPointOfInterest()) {
+            FetchPOIsTask dataTaskPOIs = new FetchPOIsTask();
+            dataTaskPOIs.execute(String.valueOf(mCurrentLocation.getLatitude()), String.valueOf(mCurrentLocation.getLongitude()));
+        }
+        bindView(false);
+    }
+
+    private void refreshMap()
+    {
+        mCurrentLocation = mLocationClient.getLastLocation();
+        FetchPostItTask dataTask = new FetchPostItTask();
+        dataTask.execute(String.valueOf(mCurrentLocation.getLatitude()), String.valueOf(mCurrentLocation.getLongitude()));
+        if (ifPointOfInterest()) {
+            FetchPOIsTask dataTaskPOIs = new FetchPOIsTask();
+            dataTaskPOIs.execute(String.valueOf(mCurrentLocation.getLatitude()), String.valueOf(mCurrentLocation.getLongitude()));
+        }
+        bindView(true);
     }
 
     public void putMarckersOnMap() {
@@ -220,6 +274,15 @@ public class MapsFragment extends Fragment implements LocationListener,
             }
         }
         return null;
+    }
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        mMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .draggable(true)
+                .title("Ajoutez un post-it"));
+        Toast.makeText(getActivity(), String.valueOf(latLng.latitude) + " - " + String.valueOf(latLng.longitude), Toast.LENGTH_LONG).show();
     }
 
     public class FetchPostItTask extends AsyncTask<String, Void, LinkedList<PostIts>> {
@@ -507,4 +570,14 @@ public class MapsFragment extends Fragment implements LocationListener,
         }
     }
 
+    private void createSettingActivity()
+    {
+        startActivity(new Intent(getActivity().getApplicationContext(), SettingActivity.class));
+    }
+
+    private boolean ifPointOfInterest()
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        return preferences.getBoolean(getString(R.string.pref_POI_key), false);
+    }
 }

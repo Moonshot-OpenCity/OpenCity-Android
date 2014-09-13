@@ -82,7 +82,6 @@ public class CreateAccount extends AsyncTask<String, Void, String>{
                 {
                     result = obj.getString("token");
                     mManager.connectUser(result);
-                    Toast.makeText(mActivity, result, Toast.LENGTH_SHORT).show();
                 }
                 catch (JSONException e)
                 {
@@ -95,7 +94,7 @@ public class CreateAccount extends AsyncTask<String, Void, String>{
         }
         else
         {
-            Toast.makeText(mActivity, "Email déja utiliser", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, "Email déjà utiliser", Toast.LENGTH_SHORT).show();
         }
     }
 }

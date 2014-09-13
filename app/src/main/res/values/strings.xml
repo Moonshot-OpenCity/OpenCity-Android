@@ -10,22 +10,35 @@
         <item>Carte</item>
         <item>Connexion</item>
     </string-array>
+    <string-array name="menu_labels_connect">
+        <item>DashBoard</item>
+        <item>Carte</item>
+        <item>Profil</item>
+    </string-array>
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="action_websearch">Web search</string>
     <string name="app_not_available">Sorry, there\'s no web browser available</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- DETAILS POSTIT INFO -->
     <string name="ownerDetail">Par &lt;b>%1$s&lt;/b>, il y a %2$s.</string>
 
-	<!-- LOGIN FRAGMENT -->
-	<string name="email">E-mail</string>
+    <!-- LOGIN FRAGMENT -->
+    <string name="email">E-mail</string>
     <string name="password">Mot de passe</string>
     <string name="connect">Connexion</string>
     <string name="pref_token_key" translate="false">token</string>
     <string name="is_login" translate="false">login</string>
-    <string name="create">Se créé un compte</string>
+    <string name="create">Se créer un compte</string>
     <string name="name">Prénom</string>
+    <string name="profile">Profil</string>
+    <string name="disconnect">Déconnexion</string>
+    <string name="add">Ajoutez un post-it</string>
+    <string name="refresh">Rafraîchir</string>
+    <string name="setting">Paramètre</string>
+    <string name="title_activity_setting">Paramètre</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="pref_POI_label" translatable="false" >"Activer les points d'intérêt"</string>
+    <string name="pref_POI_key" translatable="false">poi</string>
 </resources>

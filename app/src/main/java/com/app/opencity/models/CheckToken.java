@@ -1,11 +1,11 @@
 package com.app.opencity.models;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.app.opencity.models.SessionManager;
+import com.app.opencity.activities.MainActivity;
+import com.app.opencity.activities.SplashScreenActivity;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -21,10 +21,19 @@ public class CheckToken extends AsyncTask<Void, Void, Integer>
 {
     private Activity mActivity;
     private SessionManager mManager;
+    private boolean mSplash = false;
 
     public CheckToken(Activity activity)
     {
         super();
+        mActivity = activity;
+        mManager = new SessionManager(mActivity.getApplicationContext());
+    }
+
+    public CheckToken(Activity activity, boolean splash)
+    {
+        super();
+        mSplash = splash;
         mActivity = activity;
         mManager = new SessionManager(mActivity.getApplicationContext());
     }
@@ -55,13 +64,11 @@ public class CheckToken extends AsyncTask<Void, Void, Integer>
     @Override
     protected void onPostExecute(Integer result) {
         if (result == 200) {
-            /*FragmentManager fm = getFragmentManager();
-            fm.beginTransaction()
-                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                    .hide(this)
-                    .commit();*/
-            Toast.makeText(mActivity, "OK", Toast.LENGTH_SHORT).show();
-        } else
-            Toast.makeText(mActivity, "KO", Toast.LENGTH_SHORT).show();
+            if (!mSplash)
+                ((MainActivity) mActivity).setProfile();
+            else
+                ((SplashScreenActivity) mActivity).setProfile();
+        } else if (!mSplash)
+            Toast.makeText(mActivity, "Echec de la connexion", Toast.LENGTH_SHORT).show();
     }
 }
