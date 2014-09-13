@@ -39,6 +39,16 @@
     <string name="setting">Paramètre</string>
     <string name="title_activity_setting">Paramètre</string>
     <string name="hello_world">Hello world!</string>
-    <string name="pref_POI_label" translatable="false" >"Activer les points d'intérêt"</string>
+    <string name="pref_POI_label" translatable="false">"Activer les points d'intérêt"</string>
     <string name="pref_POI_key" translatable="false">poi</string>
+    <string name="add_post">Ajoutez un post-it</string>
+    <string name="warning_post">Vous devez être connecter pour créé un post-it</string>
+    <string name="warning_create_post">Vous devez compléter tous les champs pour envoyer le post-it</string>
+    <string name="title_activity_post">Post-it</string>
+    <string name="title_post">Titre</string>
+    <string name="validate">Valider</string>
+    <string name="cancel">Annuler</string>
+    <string name="content_post">Commentaire</string>
+    <string name="post_failed">"Votre Post-it n'a pas pu être envoyer"</string>
+
 </resources>

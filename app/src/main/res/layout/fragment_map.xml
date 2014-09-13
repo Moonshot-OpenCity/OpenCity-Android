@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.app.opencity.fragments.MapsFragment">
-
     <fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -11,13 +10,4 @@
         android:id="@+id/fragmentMap"
         android:layout_centerHorizontal="true" />
 
-    <fragment
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/fragmentDetailPostIt"
-        android:layout_marginBottom="48dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginLeft="48dp"
-        android:layout_marginRight="48dp"
-        android:name="com.app.opencity.fragments.PostItDetailFragment" />
 </RelativeLayout>

@@ -1,10 +1,9 @@
 package com.app.opencity.fragments;
 
 
-
+import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -23,9 +22,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.app.opencity.R;
+import com.app.opencity.activities.PostActivity;
 import com.app.opencity.activities.SettingActivity;
 import com.app.opencity.models.POIs;
 import com.app.opencity.models.PostIts;
+import com.app.opencity.models.SessionManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
@@ -59,14 +60,17 @@ public class MapsFragment extends Fragment implements LocationListener,
         GooglePlayServicesClient.OnConnectionFailedListener,
         GooglePlayServicesClient.ConnectionCallbacks, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
     public static final String ARG_MAP_NUMBER = "map_number";
+    public static final String EXTRA_LONGITUDE = "extra_longitude";
+    public static final String EXTRA_LATITUDE = "extra_latitude";
     private LocationClient mLocationClient;
     private GoogleMap mMap;
     private Location mCurrentLocation;
     private View mView;
+    private Marker mAddMarker = null;
     private LinkedList<MarkerOptions> mMarkers = new LinkedList<MarkerOptions>();
-    private PostItDetailFragment mFragmentDetail;
     private LinkedList<PostIts> mPostIts;
     private LinkedList<POIs> mPOIs;
+    private SessionManager mManager;
 
     public MapsFragment() {
         // Required empty public constructor
@@ -76,6 +80,7 @@ public class MapsFragment extends Fragment implements LocationListener,
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         setHasOptionsMenu(true);
     }
 
@@ -115,11 +120,11 @@ public class MapsFragment extends Fragment implements LocationListener,
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Log.v("debug", "Avant");
         View v = inflater.inflate(R.layout.fragment_map, container, false);
+        Log.v("debug", "Apres");
         mLocationClient = new LocationClient(getActivity(), this, this);
-        mFragmentDetail = ((PostItDetailFragment) getFragmentManager()
-                .findFragmentById(R.id.fragmentDetailPostIt));
-        hideDetailsFragment();
+        mManager = new SessionManager(getActivity().getApplicationContext());
         this.mView = v;
         return v;
     }
@@ -132,11 +137,6 @@ public class MapsFragment extends Fragment implements LocationListener,
             if (!isRefresh)
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place, 14));
             mMap.setMyLocationEnabled(true);
-            /*mMap.addMarker(new MarkerOptions()
-                    .title("Vous")
-                    .snippet("Votre position")
-                    .position(place)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));*/
             mMap.setOnInfoWindowClickListener(this);
             mMap.setOnMapLongClickListener(this);
         }
@@ -144,14 +144,6 @@ public class MapsFragment extends Fragment implements LocationListener,
 
     public void onDestroyView() {
         super.onDestroyView();
-        if (!getActivity().isFinishing()) {
-            FragmentManager fm = getActivity().getFragmentManager();
-            Fragment fragment = (fm.findFragmentById(R.id.fragmentMap));
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.remove(fragment);
-            ft.remove(mFragmentDetail);
-            ft.commitAllowingStateLoss();
-        }
     }
 
     public void onStart() {
@@ -174,7 +166,13 @@ public class MapsFragment extends Fragment implements LocationListener,
             FetchPOIsTask dataTaskPOIs = new FetchPOIsTask();
             dataTaskPOIs.execute(String.valueOf(mCurrentLocation.getLatitude()), String.valueOf(mCurrentLocation.getLongitude()));
         }
+        if (mAddMarker != null){
+            mAddMarker.remove();
+            mAddMarker = null;
+        }
+        Log.v("debug", "Avant");
         bindView(false);
+        Log.v("debug", "Apres");
     }
 
     private void refreshMap()
@@ -202,7 +200,8 @@ public class MapsFragment extends Fragment implements LocationListener,
             mMarkers.push(new MarkerOptions()
                     .title(element.getTitle())
                     .snippet(element.getDescription())
-                    .position(place));
+                    .position(place)
+                    .icon(BitmapDescriptorFactory.defaultMarker(element.getType().equals("positive") ? BitmapDescriptorFactory.HUE_GREEN : BitmapDescriptorFactory.HUE_RED)));
         }
     }
 
@@ -248,24 +247,36 @@ public class MapsFragment extends Fragment implements LocationListener,
     }
 
     @Override
-    public void onInfoWindowClick(Marker marker) {
-        if (!marker.getTitle().equals("POI")) {
-            mFragmentDetail.setPostIt(getCurrentPostIt(marker));
-            FragmentManager fm = getFragmentManager();
-            fm.beginTransaction()
-                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                    .show(mFragmentDetail)
-                    .commit();
+    public void onInfoWindowClick(final Marker marker) {
+        if (!marker.getTitle().equals("POI") && !marker.getTitle().equals(getString(R.string.add_post))) {
+            PostIts postIts = getCurrentPostIt(marker);
+
+
+        }
+        else if (marker.getTitle().equals(getString(R.string.add_post)))
+        {
+            if (!mManager.isLog()) {
+                AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+
+                alertDialog.setTitle("ATTENTION");
+                alertDialog.setMessage(getString(R.string.warning_post));
+                alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        marker.remove();
+                    }
+                });
+                alertDialog.show();
+            }
+            else {
+                LatLng position = marker.getPosition();
+                Intent intent = new Intent(getActivity(), PostActivity.class);
+                intent.putExtra(EXTRA_LATITUDE, position.latitude);
+                intent.putExtra(EXTRA_LONGITUDE, position.longitude);
+                startActivity(intent);
+            }
         }
     }
 
-    public void hideDetailsFragment() {
-        FragmentManager fm = getFragmentManager();
-        fm.beginTransaction()
-                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                .hide(mFragmentDetail)
-                .commit();
-    }
 
     public PostIts getCurrentPostIt(Marker marker) {
         for (PostIts element : mPostIts) {
@@ -278,11 +289,23 @@ public class MapsFragment extends Fragment implements LocationListener,
 
     @Override
     public void onMapLongClick(LatLng latLng) {
-        mMap.addMarker(new MarkerOptions()
-                .position(latLng)
-                .draggable(true)
-                .title("Ajoutez un post-it"));
-        Toast.makeText(getActivity(), String.valueOf(latLng.latitude) + " - " + String.valueOf(latLng.longitude), Toast.LENGTH_LONG).show();
+
+        if (mAddMarker == null)
+        {
+            mAddMarker = mMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .draggable(true)
+                    .title(getString(R.string.add_post))
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+        }
+        else {
+            mAddMarker.remove();
+            mAddMarker = mMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .draggable(true)
+                    .title(getString(R.string.add_post))
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+        }
     }
 
     public class FetchPostItTask extends AsyncTask<String, Void, LinkedList<PostIts>> {
@@ -393,6 +416,7 @@ public class MapsFragment extends Fragment implements LocationListener,
                     return null;
                 }
                 postItJsonStr = buffer.toString();
+
                 Log.v(LOG_TAG, "Club JSON String: " + postItJsonStr);
             } catch (MalformedURLException e) {
                 e.printStackTrace();

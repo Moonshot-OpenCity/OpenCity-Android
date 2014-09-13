@@ -32,6 +32,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private EditText mEmail;
     private EditText mPassword;
 
+
     public LoginFragment()
     {
     }

@@ -1,10 +1,9 @@
 package com.app.opencity.fragments;
 
 
-
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,8 +16,6 @@ import android.widget.TextView;
 
 import com.app.opencity.R;
 import com.app.opencity.models.PostIts;
-
-import org.w3c.dom.Text;
 
 /**
  * A simple {@link Fragment} subclass.

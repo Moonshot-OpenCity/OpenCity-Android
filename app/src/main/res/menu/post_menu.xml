@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <item
+        android:id="@+id/valid"
+        android:title="@string/validate"
+        android:icon="@drawable/ic_action_accept"
+        android:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/cancel"
+        android:icon="@drawable/ic_action_cancel"
+        android:title="@string/cancel"
+        android:showAsAction="ifRoom"/>
+</menu>

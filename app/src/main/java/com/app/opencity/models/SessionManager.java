@@ -30,6 +30,11 @@ public class SessionManager
         editor.commit();
     }
 
+    public boolean isLog()
+    {
+        return prefs.getBoolean(mContext.getString(R.string.is_login), false);
+    }
+
     public String getToken()
     {
         return prefs.getString(mContext.getString(R.string.pref_token_key), null);

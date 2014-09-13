@@ -55,7 +55,12 @@
         </activity>
         <activity
             android:name=".activities.SettingActivity"
-            android:label="@string/title_activity_setting">
+            android:label="@string/title_activity_setting" >
+        </activity>
+        <activity
+            android:name=".activities.PostActivity"
+            android:label="@string/title_activity_post"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 
