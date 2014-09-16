@@ -23,6 +23,9 @@
 
     <!-- DETAILS POSTIT INFO -->
     <string name="ownerDetail">Par &lt;b>%1$s&lt;/b>, il y a %2$s.</string>
+    <string name="hintPostItDetail">Votre commentaire...</string>
+    <string name="comment">Commenter</string>
+    <string name="comment_details_label">Par &lt;b>%1$s&lt;/b>, il y a %2$s.</string>
 
     <!-- LOGIN FRAGMENT -->
     <string name="email">E-mail</string>
@@ -36,19 +39,21 @@
     <string name="disconnect">Déconnexion</string>
     <string name="add">Ajoutez un post-it</string>
     <string name="refresh">Rafraîchir</string>
-    <string name="setting">Paramètre</string>
-    <string name="title_activity_setting">Paramètre</string>
+    <string name="setting">Paramètres</string>
+    <string name="title_activity_setting">Paramètres</string>
     <string name="hello_world">Hello world!</string>
     <string name="pref_POI_label" translatable="false">"Activer les points d'intérêt"</string>
     <string name="pref_POI_key" translatable="false">poi</string>
     <string name="add_post">Ajoutez un post-it</string>
-    <string name="warning_post">Vous devez être connecter pour créé un post-it</string>
+    <string name="warning_post">Vous devez être connecté pour créer un post-it</string>
     <string name="warning_create_post">Vous devez compléter tous les champs pour envoyer le post-it</string>
     <string name="title_activity_post">Post-it</string>
     <string name="title_post">Titre</string>
     <string name="validate">Valider</string>
     <string name="cancel">Annuler</string>
     <string name="content_post">Commentaire</string>
-    <string name="post_failed">"Votre Post-it n'a pas pu être envoyer"</string>
+    <string name="post_failed">"Votre Post-it n'a pas pu être envoyé"</string>
+    <string name="comment_failed">"Votre Commentaire n'a pas pu être envoyé"</string>
+    <string name="send_comment_fail">"Vous devez mettre un commentaire"</string>
 
 </resources>

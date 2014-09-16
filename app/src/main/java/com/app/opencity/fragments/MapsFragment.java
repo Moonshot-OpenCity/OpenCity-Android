@@ -3,6 +3,8 @@ package com.app.opencity.fragments;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,9 +21,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.app.opencity.R;
+import com.app.opencity.activities.MainActivity;
 import com.app.opencity.activities.PostActivity;
 import com.app.opencity.activities.SettingActivity;
 import com.app.opencity.models.POIs;
@@ -48,7 +52,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.LinkedList;
 
@@ -58,14 +61,15 @@ import java.util.LinkedList;
  */
 public class MapsFragment extends Fragment implements LocationListener,
         GooglePlayServicesClient.OnConnectionFailedListener,
-        GooglePlayServicesClient.ConnectionCallbacks, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
+        GooglePlayServicesClient.ConnectionCallbacks, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener{
     public static final String ARG_MAP_NUMBER = "map_number";
     public static final String EXTRA_LONGITUDE = "extra_longitude";
     public static final String EXTRA_LATITUDE = "extra_latitude";
     private LocationClient mLocationClient;
     private GoogleMap mMap;
     private Location mCurrentLocation;
-    private View mView;
+	private PostItDetailFragment mFragmentDetail;
+    private View mView = null;
     private Marker mAddMarker = null;
     private LinkedList<MarkerOptions> mMarkers = new LinkedList<MarkerOptions>();
     private LinkedList<PostIts> mPostIts;
@@ -91,10 +95,8 @@ public class MapsFragment extends Fragment implements LocationListener,
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.refresh:
                 refreshMap();
                 return true;
@@ -105,7 +107,7 @@ public class MapsFragment extends Fragment implements LocationListener,
                 super.onOptionsItemSelected(item);
 
         }
-       return true;
+        return true;
     }
 
     public static MapsFragment newInstance(int position) {
@@ -119,14 +121,15 @@ public class MapsFragment extends Fragment implements LocationListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
-        Log.v("debug", "Avant");
-        View v = inflater.inflate(R.layout.fragment_map, container, false);
-        Log.v("debug", "Apres");
+        this.mView = inflater.inflate(R.layout.fragment_map, container, false);
         mLocationClient = new LocationClient(getActivity(), this, this);
         mManager = new SessionManager(getActivity().getApplicationContext());
-        this.mView = v;
-        return v;
+		mFragmentDetail = ((PostItDetailFragment) getFragmentManager()
+                .findFragmentById(R.id.fragmentDetailPostIt));
+        hideDetailsFragment();
+        return this.mView;
     }
 
     public void bindView(boolean isRefresh) {
@@ -144,6 +147,7 @@ public class MapsFragment extends Fragment implements LocationListener,
 
     public void onDestroyView() {
         super.onDestroyView();
+        killFragment();
     }
 
     public void onStart() {
@@ -154,6 +158,36 @@ public class MapsFragment extends Fragment implements LocationListener,
     public void onStop() {
         mLocationClient.disconnect();
         super.onStop();
+    }
+
+    @Override
+    public void onDisconnected() {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 
     @Override
@@ -170,9 +204,7 @@ public class MapsFragment extends Fragment implements LocationListener,
             mAddMarker.remove();
             mAddMarker = null;
         }
-        Log.v("debug", "Avant");
         bindView(false);
-        Log.v("debug", "Apres");
     }
 
     private void refreshMap()
@@ -215,43 +247,17 @@ public class MapsFragment extends Fragment implements LocationListener,
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
         }
     }
-
-    @Override
-    public void onDisconnected() {
-
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-
-    }
-
-    @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String s) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
-
     @Override
     public void onInfoWindowClick(final Marker marker) {
+        LinearLayout layout = (LinearLayout) mView.findViewById(R.id.layout_fragment_details);
+        layout.setVisibility(View.VISIBLE);
         if (!marker.getTitle().equals("POI") && !marker.getTitle().equals(getString(R.string.add_post))) {
-            PostIts postIts = getCurrentPostIt(marker);
-
-
+			mFragmentDetail.setPostIt(getCurrentPostIt(marker));
+            FragmentManager fm = getFragmentManager();
+            fm.beginTransaction()
+                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                    .show(mFragmentDetail)
+                    .commit();
         }
         else if (marker.getTitle().equals(getString(R.string.add_post)))
         {
@@ -277,6 +283,14 @@ public class MapsFragment extends Fragment implements LocationListener,
         }
     }
 
+	public void hideDetailsFragment() {
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction()
+                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                .hide(mFragmentDetail)
+                .commit();
+        MainActivity.hideKeyboard(getActivity());
+    }
 
     public PostIts getCurrentPostIt(Marker marker) {
         for (PostIts element : mPostIts) {
@@ -316,13 +330,7 @@ public class MapsFragment extends Fragment implements LocationListener,
 
         }
 
-        /**
-         * Take the String representing the complete enterprises in JSON Format and
-         * pull out the data we need to save the data to display in the frame bellow.
-         * <p/>
-         * Fortunately parsing is easy:  constructor takes the JSON string and converts it
-         * into an Object hierarchy for us.
-         */
+
         private LinkedList<PostIts> getDataFromJson(String forecastJsonStr)
                 throws JSONException {
 
@@ -420,8 +428,6 @@ public class MapsFragment extends Fragment implements LocationListener,
                 Log.v(LOG_TAG, "Club JSON String: " + postItJsonStr);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
-            } catch (ProtocolException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
@@ -463,13 +469,6 @@ public class MapsFragment extends Fragment implements LocationListener,
 
         }
 
-        /**
-         * Take the String representing the complete enterprises in JSON Format and
-         * pull out the data we need to save the data to display in the frame bellow.
-         * <p/>
-         * Fortunately parsing is easy:  constructor takes the JSON string and converts it
-         * into an Object hierarchy for us.
-         */
         private LinkedList<POIs> getDataFromJson(String forecastJsonStr)
                 throws JSONException {
 
@@ -559,8 +558,6 @@ public class MapsFragment extends Fragment implements LocationListener,
                 Log.v(LOG_TAG, "Club JSON String: " + postItJsonStr);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
-            } catch (ProtocolException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
@@ -603,5 +600,16 @@ public class MapsFragment extends Fragment implements LocationListener,
     {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         return preferences.getBoolean(getString(R.string.pref_POI_key), false);
+    }
+    private void killFragment()
+    {
+        Fragment fragment = (getFragmentManager().findFragmentById(R.id.fragmentMap));
+        FragmentTransaction ft = getActivity().getFragmentManager().beginTransaction();
+
+        if (fragment != null) {
+            ft.remove(fragment);
+			ft.remove(mFragmentDetail);
+            ft.commit();
+        }
     }
 }

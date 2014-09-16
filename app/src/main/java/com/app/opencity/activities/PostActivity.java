@@ -187,7 +187,7 @@ public class PostActivity extends Activity implements View.OnClickListener{
         public void onPostExecute(Integer result)
         {
             if (result == 201) {
-                Toast.makeText(PostActivity.this, "Post-it envoyer", Toast.LENGTH_LONG).show();
+                Toast.makeText(PostActivity.this, "Post-it envoyé", Toast.LENGTH_LONG).show();
                 finish();
             }
             else {

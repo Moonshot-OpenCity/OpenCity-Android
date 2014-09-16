@@ -10,4 +10,25 @@
         android:id="@+id/fragmentMap"
         android:layout_centerHorizontal="true" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:id="@+id/layout_fragment_details">
+
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/fragmentDetailPostIt"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:name="com.app.opencity.fragments.PostItDetailFragment" />
+
+        </LinearLayout>
 </RelativeLayout>
+    <!--android:layout_marginBottom="48dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"-->

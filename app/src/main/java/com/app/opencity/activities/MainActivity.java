@@ -28,6 +28,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -234,5 +235,10 @@ public class MainActivity extends Activity {
     private void createSettingActivity()
     {
         startActivity(new Intent(this.getApplicationContext(), SettingActivity.class));
+    }
+    public static void hideKeyboard(Activity activity)
+    {
+        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 }
